@@ -1,0 +1,131 @@
+Lab 04:
+Question 1: 
+- Which classes are aggregates of other classes? Checking all constructors of whole classes if they initialize for their parts?
+- Write constructors for parent and child classes. Remove redundant setter methods if any.
+
+Câu hỏi (Dịch Tiếng Việt): 
+- Các lớp nào là tập hợp của các lớp khác? Có cần kiểm tra tất cả các hàm khởi tạo của toàn bộ các lớp để xác định xem chúng có khởi tạo cho các phần của chúng hay không?
+- Viết các hàm khởi tạo cho các lớp cha và lớp con. Loại bỏ các phương thức setter thừa nếu có.
+
+Câu hỏi 1.1: Lớp Book và CompactDisc là tập hợp của các lớp khác vì chúng chứa danh sách authors (trong Book) và tracks (trong CompactDisc).
+
+Câu hỏi 1.2: 
+Lớp Media (Lớp Cha)
+package hust.soict.itep.aims.media;
+
+public abstract class Media {
+    private int id;
+    private String title;
+    private String category;
+    private float cost;
+
+    public Media(int id, String title, String category, float cost) {
+        this.id = id;
+        this.title = title;
+        this.category = category;
+        this.cost = cost;
+    }
+
+    public int getId() { return id; }
+    public String getTitle() { return title; }
+    public String getCategory() { return category; }
+    public float getCost() { return cost; }
+}
+
+Lớp Book (Lớp Con):
+package hust.soict.itep.aims.media;
+
+import java.util.ArrayList;
+
+public class Book extends Media {
+    private ArrayList<String> authors;
+
+    public Book(int id, String title, String category, float cost) {
+        super(id, title, category, cost);
+        this.authors = new ArrayList<>();
+    }
+
+    public void addAuthor(String authorName) {
+        if (!authors.contains(authorName)) {
+            authors.add(authorName);
+        } else {
+            System.out.println("Author already exists.");
+        }
+    }
+
+    public void removeAuthor(String authorName) {
+        if (authors.contains(authorName)) {
+            authors.remove(authorName);
+        } else {
+            System.out.println("Author not found.");
+        }
+    }
+}
+
+
+Question 2: When overriding the equals() method of the Object class, you will have to cast the Object parameter obj to the type of Object that you are dealing with. For example, in the Media class, you must cast the Object obj to a Media, and then check the equality of the two objects’ attributes as the above requirements (i.e. title for Media; title and length for Track). If the passing object is not an instance of Media, what happens?
+
+Câu hỏi (Dịch Tiếng Việt): Khi ghi đè phương thức equals() của lớp Object, bạn sẽ phải ép kiểu tham số Object obj thành loại đối tượng mà bạn đang xử lý. Ví dụ, trong lớp Media, bạn phải ép kiểu đối tượng obj thành Media, và sau đó kiểm tra sự bằng nhau của các thuộc tính của hai đối tượng theo các yêu cầu trên (ví dụ: tiêu đề cho Media; tiêu đề và độ dài cho Track). Nếu đối tượng được truyền vào không phải là một thể hiện của Media, điều gì sẽ xảy ra?
+
+Nếu obj không phải là một thể hiện của lớp mà ta đang so sánh, thì phép kiểm tra instanceof sẽ thất bại, và phương thức equals() sẽ trả về false. Điều này đảm bảo rằng các đối tượng thuộc các loại khác nhau sẽ không được coi là bằng nhau.
+
+
+Question 3: Iterate through the list and print out the information of the media by using toString() method. Observe what happens and explain in detail.
+Câu hỏi (Dịch Tiếng Việt): Lặp qua danh sách và in ra thông tin của các đối tượng media bằng cách sử dụng phương thức toString(). Quan sát điều gì xảy ra và giải thích chi tiết.
+
+Trong trường hợp này, phương thức toString() được gọi từ lớp Media và được ghi đè trong các lớp như CompactDisc, DigitalVideoDisc và Book. Khi bạn gọi phương thức toString() trên một đối tượng Media, Java sẽ kiểm tra loại thực tế của đối tượng (có thể là CompactDisc, DigitalVideoDisc hoặc Book) và tự động gọi phương thức toString() tương ứng, nhờ vào tính đa hình động.
+Khi ta gọi mediaList.get(i).toString(), nếu đối tượng ở vị trí i là một đối tượng của lớp CompactDisc, phương thức toString() của lớp CompactDisc sẽ được gọi. Nếu đối tượng ở vị trí i là một đối tượng của lớp DigitalVideoDisc, phương thức toString() của lớp DigitalVideoDisc sẽ được gọi.
+Tương tự với lớp Book.
+Bằng cách ghi đè phương thức toString() trong các lớp, chúng ta có thể xuất ra các thông tin chi tiết khác nhau cho mỗi loại đối tượng, ngay cả khi chúng được lưu trữ dưới dạng biến Media.
+
+
+Question 4: Alternatively, to compare items in the cart, instead of using Comparator, we can use the Comparable interface and override the compareTo()method. You can refer to the Java docs to see the information of this interface. 
+Suppose we are taking this Comparable interface approach.
+- What class should implement the Comparable interface?
+- In those classes, how should you implement the compareTo()method be to reflect the ordering that we want?
+- Can we have two ordering rules of the item (by title then cost and by cost then title) if we use this Comparable interface approach?
+- Suppose the DVDs has a different ordering rule from the other media types, that is by title, then decreasing length, then cost. How would you modify your code to allow this?
+
+Câu hỏi (Dịch Tiếng Việt): Ngược lại, để so sánh các mục trong giỏ hàng, thay vì sử dụng Comparator, chúng ta có thể sử dụng interface Comparable và ghi đè phương thức compareTo(). Bạn có thể tham khảo tài liệu Java để xem thông tin về interface này.
+Giả sử chúng ta đang áp dụng phương pháp interface Comparable:
+- Lớp nào nên triển khai interface Comparable?
+- Trong các lớp đó, bạn nên triển khai phương thức compareTo() như thế nào để phản ánh thứ tự mà chúng ta mong muốn?
+- Chúng ta có thể có hai quy tắc sắp xếp cho mục (theo tiêu đề rồi đến giá, và theo giá rồi đến tiêu đề) nếu chúng ta sử dụng phương pháp interface Comparable không?
+- Giả sử các DVD có quy tắc sắp xếp khác với các loại phương tiện khác, đó là theo tiêu đề, sau đó là độ dài giảm dần, rồi đến giá. Bạn sẽ sửa đổi mã của mình như thế nào để cho phép điều này?
+
+Câu hỏi 4.1: Lớp Media nên triển khai Comparable<Media> vì nó là lớp cơ sở cho tất cả các loại media, bao gồm Book, CompactDisc, và DigitalVideoDisc. Việc này cho phép các đối tượng thuộc các lớp con so sánh được dựa trên tiêu chí mặc định. Sắp xếp là một chức năng chung giữa tất cả các đối tượng media. Bằng cách triển khai Comparable trong lớp Media, chúng ta có thể xác định một thứ tự tự nhiên cho tất cả các loại media, giúp việc so sánh và sắp xếp các đối tượng trở nên dễ dàng hơn.
+
+Câu hỏi 4.2: Để triển khai thứ tự tự nhiên trong phương thức compareTo():
+- Thứ tự chính: So sánh theo tiêu đề theo thứ tự chữ cái.
+- Thứ tự phụ (tiêu chí phân định): Nếu các tiêu đề giống nhau, so sánh theo giá theo thứ tự giảm dần.
+Dưới đây là cách mà phương thức compareTo() trong lớp Media sẽ trông như thế nào:
+public int compareTo(Media other) {
+    int titleComparison = this.title.compareTo(other.title);
+    if (titleComparison != 0) {
+        return titleComparison; // Trả về kết quả so sánh title
+    }
+    return Float.compare(this.cost, other.cost);
+}
+
+Câu hỏi 4.3: Không, nếu chỉ sử dụng interface Comparable, chỉ có thể áp dụng một quy tắc sắp xếp mặc định, như được định nghĩa bởi phương thức compareTo(). Interface Comparable cho phép chỉ một thứ tự tự nhiên. Để hỗ trợ nhiều quy tắc sắp xếp (ví dụ: theo tiêu đề rồi đến giá và theo giá rồi đến tiêu đề), nên sử dụng interface Comparator. Comparator cho phép chúng ta định nghĩa và sử dụng nhiều quy tắc sắp xếp tùy chỉnh một cách linh hoạt hơn.
+
+Câu hỏi 4.4: Cần override lại phương thức compareTo() trong lớp con DigitalVideoDisc:
+    public int compareTo(Media other) {
+        if (other instanceof DigitalVideoDisc) {
+            DigitalVideoDisc otherDVD = (DigitalVideoDisc) other;
+
+            int titleComparison = this.getTitle().compareTo(otherDVD.getTitle());
+            if (titleComparison != 0) {
+                return titleComparison;
+            }
+
+            int lengthComparison = Integer.compare(otherDVD.getLength(), this.getLength());
+            if (lengthComparison != 0) {
+                return lengthComparison;
+            }
+
+            return Float.compare(this.getCost(), otherDVD.getCost());
+        }
+        return super.compareTo(other);
+    }
+}
