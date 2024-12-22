@@ -27,7 +27,7 @@ public class CartScreen extends JFrame {
 			@Override
 			public void run() {
 				try {
-					FXMLLoader loader = new FXMLLoader(getClass().getResource("Cart.fxml"));
+					FXMLLoader loader = new FXMLLoader(getClass().getResource("/aims/screen/Cart.fxml"));
 					CartScreenController controller = new CartScreenController(store, cart);
 					loader.setController(controller);
 					Parent root = loader.load();
